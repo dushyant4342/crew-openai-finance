@@ -1,2 +1,2 @@
 # crew-openai-finance
-AI Agent for research &amp; writer
+AI Agents for researching &amp; writing using Sepertool and OpenAI LLM.
