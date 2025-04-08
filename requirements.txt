@@ -5,3 +5,13 @@ crewai_tools
 serpapi
 google-search-results
 langchain_openai
+fpdf
+gTTS
+Pillow
+pytz
+langchain-google-genai
+langchain-openai
+google-generativeai
+google-genai
+langchain-groq
+#pip install crewai crewai-tools python-dotenv langchain-openai fpdf gTTS Pillow pytz
