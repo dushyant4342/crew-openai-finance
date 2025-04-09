@@ -23,7 +23,7 @@ def create_research_task(agent, topic, context=None):
 def create_writing_task(agent, topic, context):
     return Task(
         description=f"[{get_ist_timestamp_str()}] Based on the research provided in the context, write a concise and engaging newsletter article about {topic}. The tone should be informative yet accessible.",
-        expected_output="A well-structured newsletter article in detail about the research findings.",
+        expected_output="A well-structured newsletter article in details about the research findings.",
         agent=agent,
         context=context # Requires context from research_task
     )

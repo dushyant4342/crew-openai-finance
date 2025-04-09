@@ -157,8 +157,8 @@ if do_audio:
 if do_email:
     print("Creating Email Task...")
     agents_in_crew.add(email_sender_agent)
-    email_subject = f"Newsletter: {topic} - {timestamp}"
-    email_body = f"Hi,\n\nPlease find attached the newsletter from the prompt:  '{topic}'.\n\nBest regards,\nYour CrewAI Bot"
+    email_subject = f"Newsletter by CrewAI BOT - {timestamp}"
+    email_body = f"Hi,\n\nPlease find the newsletter generated from the prompt:  '{topic}'.\n\nBest regards,\nYour CrewAI Bot"
 
     # Context is the last task that was actually added to the sequence
     email_context = [last_task_object]
