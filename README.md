@@ -15,7 +15,7 @@ This project utilizes the CrewAI framework to automate the creation and distribu
 * **Sequential Workflow:** Tasks are executed one after another in a predefined order (Research -> Write -> PDF -> Audio -> Email).
 * **Modular Design:** Uses separate files for agents (`agents.py`), task definitions (`tasks.py`), and tools (`tools.py`).
 
-## Workflow
+## AI Workflow
 
 The process is orchestrated by the `main.py` script:
 
