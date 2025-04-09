@@ -43,7 +43,7 @@ def pdf_creation_tool(text_content: str, base_filename: str = "report") -> str:
     """
     timestamp = get_ist_timestamp_str()
     safe_base_filename = base_filename.replace(" ", "_")
-    filename = f"{safe_base_filename}_{timestamp}_IST.pdf"
+    filename = f"{safe_base_filename}.pdf"
 
     output_dir = "outputs"
     os.makedirs(output_dir, exist_ok=True)
@@ -76,7 +76,7 @@ def text_to_speech_tool(text_content: str, base_filename: str = "audio_summary")
     """
     timestamp = get_ist_timestamp_str()
     safe_base_filename = base_filename.replace(" ", "_")
-    filename = f"{safe_base_filename}_{timestamp}_IST.mp3"
+    filename = f"{safe_base_filename}.mp3"
 
     output_dir = "outputs"
     os.makedirs(output_dir, exist_ok=True)

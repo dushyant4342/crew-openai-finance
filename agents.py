@@ -4,9 +4,6 @@ from crewai import Agent
 from dotenv import load_dotenv
 import pytz # Added for timestamp helper
 from datetime import datetime # Added for timestamp helper
-
-
-
 # Import tools 
 from tools import (
     search_tool,
@@ -29,9 +26,29 @@ from langchain_groq import ChatGroq
 #from langchain.chat_models import ChatOpenAI
 
 
-from langchain_openai import ChatOpenAI #worked but api quota reached
-llm = ChatOpenAI(model="gpt-4", temperature=0.2) # Lower temp for manager might be better
+print("Loading environment variables...")
+load_dotenv()
+print("Retrieving API Key...")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+if not GEMINI_API_KEY:
+    print("\nERROR: GEMINI_API_KEY not found in environment variables.")
+    print("Please ensure you have a .env file with GEMINI_API_KEY=your_key")
+    exit(1)
+else:
+    masked_key = GEMINI_API_KEY[:4] + "****" + GEMINI_API_KEY[-4:]
+    print(f"Found API Key (masked): {masked_key}")
+
+from crewai import Agent, LLM
+print("Initializing LLM...")
+
+llm = LLM(
+    api_key=os.getenv("GEMINI_API_KEY"),
+    model="gemini/gemini-1.5-flash",
+)
+
+#from langchain_openai import ChatOpenAI #worked but api quota reached
+#llm = ChatOpenAI(model="gpt-4", temperature=0.2) # Lower temp for manager might be better
 
 # Initialize Groq LLM (Example using Llama 3 70b)
 # llm = ChatGroq(
@@ -77,30 +94,28 @@ def get_ist_timestamp_str(format_str="%Y%m%d_%H%M"):
     return now_ist.strftime(format_str)
 
 
-# --- Agent Definitions ---
+# manager_agent = Agent(
+#     role="Planner", # Changed Role slightly
+#     goal=(
+#         "Analyze the user's request to understand the topic, required final outputs (pdf, audio, email, local save), "
+#         "and any parameters (recipient, base filenames). "
+#         "Create a step-by-step plan outlining the sequence of tasks (e.g., Research, Write, Create PDF, Send Email, Save File), "
+#         "assigning each step to the appropriate specialist agent role (e.g., Researcher, Writer, PDF Creator, Emailer, File Saver). "
+#         "Your final output MUST be ONLY the structured plan, clearly listing each step number, the task description for that step, "
+#         "and the specialist agent role responsible. Extract necessary parameters like topic, recipient email, and base filename."
+#     ),
+#     backstory=(
+#         "You are a meticulous planning specialist. You excel at interpreting user requests "
+#         "and translating them into clear, sequential execution plans for a team of specialist agents. "
+#         "You identify all necessary steps, parameters, and the correct agent role for each step."
+#     ),
+#     tools=[], # Planner does not use tools or delegate directly
+#     llm=llm, # Assign the initialized Gemini LLM
+#     allow_delegation=False, # IMPORTANT: Changed to False
+#     verbose=True )
 
-# 1. Project Manager Agent
-manager_agent = Agent(
-    role="Project Manager",
-    goal=(
-        "Oversee the newsletter creation process based on user requests. "
-        "Analyze the user's prompt to understand the topic, required actions (research, write, pdf, audio, email, save locally), and any parameters (like email recipient, desired base filenames). "
-        "Plan the necessary steps and delegate tasks sequentially to the appropriate specialist agents. "
-        "Ensure agents are aware that filenames for PDF and audio will be automatically timestamped."
-        "Ensure the final output matches the user's request."
-    ),
-    backstory=(
-        "You are an expert project manager, skilled at breaking down complex requests "
-        "into actionable steps and coordinating a team of specialists. You meticulously "
-        "plan the workflow, ensuring agents know filenames get timestamped, and that each agent receives the necessary information "
-        "from previous steps to complete their task effectively."
-    ),
-    tools=[], # Manager delegates
-    llm=llm, # Assign the initialized Gemini LLM    
 
-    allow_delegation=True,
-    verbose=True # Keep agent verbose for debugging delegation
-)
+
 
 # 2. Researcher Agent
 researcher_agent = Agent(
@@ -120,7 +135,7 @@ researcher_agent = Agent(
 # 3. Writer Agent
 writer_agent = Agent(
     role="Content Writer",
-    goal="Synthesize the research findings about {topic} into a clear, concise, and engaging newsletter article.",
+    goal="Synthesize the research findings about {topic} into a clear, detailed, and engaging newsletter article.",
     backstory=(
         "You are a talented writer, specialized in transforming research data "
         "into compelling newsletter content. You focus on clarity and engagement."
@@ -188,8 +203,8 @@ local_saver_agent = Agent(
 )
 
 # --- Agent List for easy import ---
-newsletter_agents = [
-    manager_agent,
+specialist_agents = [
+  
     researcher_agent,
     writer_agent,
     pdf_creator_agent,
@@ -198,3 +213,4 @@ newsletter_agents = [
     local_saver_agent
 ]
 
+#  manager_agent,
